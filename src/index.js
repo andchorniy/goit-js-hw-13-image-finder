@@ -43,7 +43,7 @@ function createMarkup() {
     images.fetchImage()
         .then(img => {
             refs.gallery.insertAdjacentHTML('beforeend', galleryTemplate(img.hits)) 
-            console.log(img);
+            
 })
         .then(loadMore.loaded)
         .then(() => scrollToNewContent(images.page))
