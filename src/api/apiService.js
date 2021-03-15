@@ -7,6 +7,7 @@ export default class ImagesApi {
         this.page = 1
         this.query = ''
         this.selector = selector
+        
     }
     async fetchImage() {
         const response = await fetch(`${BASE_URL}?image_type=photo&orientation=horizontal&q=${this.query}&page=${this.page}&per_page=12&key=${KEY}`)

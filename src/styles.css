@@ -1,3 +1,5 @@
+@import '../node_modules/pnotify/dist/PNotifyBrightTheme.css';
+
 html {
   box-sizing: border-box;
 }
@@ -8,6 +10,7 @@ html {
   box-sizing: inherit;
   padding: 0;
   margin: 0;
+  list-style: none;
 }
 
 body {
@@ -16,7 +19,6 @@ body {
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   width: 960px;
   margin: 0 auto;
-  
   
 }
 [name="query"]{
@@ -28,16 +30,22 @@ body {
   font-size: 18px;
   margin: 20px 405px; 
 }
+.load-more-wraper{
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
 .load-more{
+  border: 0;
   width: 150px;
   padding: 8px;
   color: #fff;
   background: #3b5998;
   border-radius: 5px;
   font-size: 18px;
-  margin: 20px 405px;
+  margin: 0 auto;
 }
-.load-more.is-hidden{
+.is-hidden{
   display: none;
 }
 .load-more:hover{
@@ -46,9 +54,9 @@ body {
   border: 2px solid #3b5998 ;
 }
 
-
-.load-more > .spinner.is-hidden {
-  display: none;
+.spinner-border{
+  margin: 0 auto;
+  color: #3b5998; 
 }
 
 .gallery{
