@@ -1,3 +1,4 @@
+
 const BASE_URL = 'https://pixabay.com/api/'
 const KEY = '20675332-a9702851f51ed62280a08ad8f'
 
@@ -10,9 +11,15 @@ export default class ImagesApi {
         
     }
     async fetchImage() {
-        const response = await fetch(`${BASE_URL}?image_type=photo&orientation=horizontal&q=${this.query}&page=${this.page}&per_page=12&key=${KEY}`)
-        const result = await response.json() 
-        return result
+        
+            const response = await fetch(`${BASE_URL}?image_type=photo&orientation=horizontal&q=${this.query}&page=${this.page}&per_page=12&key=${KEY}`)
+            const result = await response.json()
+            
+            if (!result.hits.length || !this.query.trim()) {
+                throw new Error
+            }
+            return result
+        
     }
     getFormData() {
         const formData = new FormData(this.selector)
@@ -20,8 +27,7 @@ export default class ImagesApi {
         formData.forEach((value, key) => {
             body[key] = value;
         });
-
-       this.query = body.query
+        this.query = body.query
     }
     incrementPage() {
         this.page +=1

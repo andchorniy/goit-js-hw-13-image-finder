@@ -13,6 +13,8 @@ export default class LoadMore {
         this.spinner.classList.add('is-hidden')
         this.button.classList.remove('is-hidden')
     }
-   
+    hideSpinner() {
+        this.spinner.classList.add('is-hidden')
+    }
     
 }

@@ -7,10 +7,7 @@ import * as basicLightbox from 'basiclightbox'
 import PNotify from '../node_modules/pnotify/dist/es/PNotify';
 
 
-PNotify.error({
-  title: 'Oh No!',
-  text: 'Something terrible happened.'
-});
+
 
 const refs = {
     input: document.querySelector('.search-form'),
@@ -30,6 +27,8 @@ function onSearch(e) {
     e.preventDefault()
     refs.gallery.innerHTML = ''
     images.resetPage()
+    
+    images.getFormData()
     createMarkup()
     
 }
@@ -39,12 +38,22 @@ function loadMoreImg() {
 }
 
 function createMarkup() {
-    images.getFormData()
+    
     loadMore.inProgress()
     images.fetchImage()
-        .then(img => refs.gallery.insertAdjacentHTML('beforeend', galleryTemplate(img.hits)))
+        .then(img => {
+            refs.gallery.insertAdjacentHTML('beforeend', galleryTemplate(img.hits)) 
+            console.log(img);
+})
         .then(loadMore.loaded)
         .then(() => scrollToNewContent(images.page))
+        .catch(() => {
+            PNotify.error({
+                    title: 'Oh No!',
+                    text: 'Incorrect request.'
+            })
+            loadMore.hideSpinner()
+        })
      
 }
 function openOriginalSize(e) {
