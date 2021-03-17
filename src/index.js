@@ -1,71 +1,73 @@
-import '../node_modules/basiclightbox/dist/basicLightbox.min.css'
+import '../node_modules/basiclightbox/dist/basicLightbox.min.css';
 import './styles.css';
-import ImagesApi from './api/apiService'
-import LoadMore from './load-more'
-import galleryTemplate from './templates/gallery.hbs'
-import * as basicLightbox from 'basiclightbox'
+import ImagesApi from './api/apiService';
+import LoadMore from './load-more';
+import galleryTemplate from './templates/gallery.hbs';
+import * as basicLightbox from 'basiclightbox';
 import PNotify from '../node_modules/pnotify/dist/es/PNotify';
 
-
-
-
 const refs = {
-    input: document.querySelector('.search-form'),
-    gallery: document.querySelector('.gallery'),
-    
-}
+  searchForm: document.querySelector('.search-form'),
+  gallery: document.querySelector('.gallery'),
+};
 
-const images = new ImagesApi(refs.input)
-const loadMore = new LoadMore()
+const images = new ImagesApi(refs.searchForm);
+const loadMore = new LoadMore();
 
-
-refs.input.addEventListener('submit', onSearch)
-loadMore.button.addEventListener('click', loadMoreImg)
-refs.gallery.addEventListener('click', openOriginalSize)
+refs.searchForm.addEventListener('submit', onSearch);
+loadMore.button.addEventListener('click', loadMoreImg);
+refs.gallery.addEventListener('click', openOriginalSize);
 
 function onSearch(e) {
-    e.preventDefault()
-    refs.gallery.innerHTML = ''
-    images.resetPage()
-    
-    images.getFormData()
-    createMarkup()
-    
+  e.preventDefault();
+  refs.gallery.innerHTML = '';
+  images.resetPage();
+
+  images.getFormData();
+  createMarkup();
 }
 function loadMoreImg() {
-    images.incrementPage()
-    createMarkup()
+  images.incrementPage();
+  createMarkup();
 }
 
 function createMarkup() {
-    
-    loadMore.inProgress()
-    images.fetchImage()
-        .then(img => {
-            refs.gallery.insertAdjacentHTML('beforeend', galleryTemplate(img.hits)) 
-            
-})
-        .then(loadMore.loaded)
-        .then(() => scrollToNewContent(images.page))
-        .catch(() => {
-            PNotify.error({
-                    title: 'Oh No!',
-                    text: 'Incorrect request.'
-            })
-            loadMore.hideSpinner()
-        })
-     
+  loadMore.inProgress();
+  images
+    .fetchImage()
+    .then(img => {
+      refs.gallery.insertAdjacentHTML('beforeend', galleryTemplate(img.hits));
+      if (!img.totalHits) throw new Error('Not found');
+      return img.totalHits <= images.page * 12;
+    })
+    .then(res => {
+      if (res) {
+        loadMore.hideButton();
+        loadMore.hideSpinner();
+      } else {
+        loadMore.loaded();
+      }
+    })
+    .then(() => scrollToNewContent(images.page))
+    .catch(error => {
+      PNotify.error({
+        title: 'Oh No!',
+        text: `${error.message}`,
+      });
+      loadMore.hideSpinner();
+    });
 }
 function openOriginalSize(e) {
-    if (e.target.nodeName !== "IMG") return
-    const instance = basicLightbox
-        .create(`<img src='${e.target.dataset.original}' alt ='${images.query}' width='600'>`)
-    
-    instance.show()   
+  if (e.target.nodeName !== 'IMG') return;
+  const instance = basicLightbox.create(
+    `<img src='${e.target.dataset.original}' alt ='${images.query}' width='600'>`,
+  );
+
+  instance.show();
 }
 function scrollToNewContent(page) {
-    window.scrollTo({
+  window.scrollTo({
     top: 1360 * (page - 1) + 87,
-    behavior: 'smooth'
-    });
+    behavior: 'smooth',
+  });
 }
