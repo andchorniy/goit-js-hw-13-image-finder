@@ -67,7 +67,9 @@ function openOriginalSize(e) {
 }
 function scrollToNewContent(page) {
   window.scrollTo({
-    top: 1360 * (page - 1) + 87,
+    top:
+      (refs.gallery.clientHeight / page) * (page - 1) +
+      refs.searchForm.clientHeight,
     behavior: 'smooth',
   });
 }
